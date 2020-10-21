@@ -1,6 +1,6 @@
 const sustituto = /^\@+$/;
 
-const codigo = "fun main(){ val hola:String=2; val y=\"Hello\"; /*Comentario*/ println(y+x); }";
+const codigo = "fun main(){ val hola:String=2; val y=\"Hello\"; /*Comentario*/ while(1>2){ print(\"Entro_aqui\") } println(y+x); }";
 
 const regexs = [
     {
@@ -30,6 +30,10 @@ const regexs = [
     {
         exp: /[\+\-\*\/*][\+\-\*\/+]*[\+\-\*\/+]*[\+\-\*\/*]*/,
         nombre: "<Operador>"
+    },
+    {
+        exp: /[\<\>][\<\>]*[\<\>]*[\<\>]*/,
+        nombre:"<Comparador>"
     },
     {
         exp: /{/,
@@ -70,6 +74,10 @@ const regexs = [
     {
         exp: /;/,
         nombre: "<Fin instruccion>"
+    },
+    {
+        exp:/[\$\|\^\~\°\¬\!\#\%\&\¡\¨\´\`][\$\|\^\~\°\¬\!\#\%\&\¡\¨\´\`]*[\$\|\^\~\°\¬\!\#\%\&\¡\¨\´\`]*/,
+        nombre:"<Simbolo no reconocido>"
     }
 
 ]
