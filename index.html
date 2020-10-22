@@ -141,8 +141,9 @@
                 container.style.alignItems = "baseline"
                 let title = document.createElement("h6")
                 title.appendChild(document.createTextNode("Bloque: "))
-                let value = document.createElement("span")
-                value.appendChild(document.createTextNode(bloque))
+                title.style.marginRight = "10px"
+                let value = document.createElement("code")
+                value.appendChild(document.createTextNode(" "+ bloque))
                 container.appendChild(title)
                 container.appendChild(value)
                 document.getElementById("resultado").appendChild(container)
