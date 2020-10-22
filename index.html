@@ -131,8 +131,10 @@
         ]
 
         const bloques = codigo.split(/\s+/);
+        var emergencia = true, i = 0;
 
         bloques.forEach((bloque) => {
+            i = 0;
             var tokens = [];
 
             if (!bloque.match(comentario) && !bloque.match(comentarioB)) {
@@ -143,7 +145,7 @@
                 title.appendChild(document.createTextNode("Bloque: "))
                 title.style.marginRight = "10px"
                 let value = document.createElement("code")
-                value.appendChild(document.createTextNode(" "+ bloque))
+                value.appendChild(document.createTextNode(" " + bloque))
                 container.appendChild(title)
                 container.appendChild(value)
                 document.getElementById("resultado").appendChild(container)
@@ -151,16 +153,23 @@
                 console.log("\nBloque: ", bloque);
             }
 
-            while (!sustituto.exec(bloque)) {
+            while (!sustituto.exec(bloque) && emergencia) {
+                i++;
                 regexs.forEach((regex) => {
+
                     const ejecucion = regex.exp.exec(bloque);
                     if (ejecucion) {
                         tokens[ejecucion.index] = regex.nombre;
                         bloque = bloque.replace(ejecucion[0], "@".repeat(ejecucion[0].length));
                     }
                 });
+
+                if (i == 50) {
+                    emergencia = false;
+                }
             }
 
+            emergencia = true;
             for (indice2 in tokens) {
                 let contain = document.createElement("div")
                 let token = document.createElement("small")
