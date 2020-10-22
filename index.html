@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Tokenizador TEO</title>
+</head>
+
+<body>
+    <div class="container mt-3">
+        <div class="jumbotron">
+            <h1 class="display-4">Tokenizador </h1>
+            <p class="lead">
+                El siguiente programa es un simple tokenizador del lenguaje Kotlin desarrollado en JavaScript
+            </p>
+
+            <hr class="my-4">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Codigo fuente Kotlin:</label>
+                <input class="form-control" id="code" aria-describedby="emailHelp" placeholder="Código en Kotlin">
+                <small id="emailHelp" class="form-text text-muted">Ingrese el fragmento de código escrito en
+                    Kotlin.</small>
+            </div>
+            <div class="form-group">
+                <button id="go" class="btn btn-primary">Tokenizar</button>
+            </div>
+        </div>
+        <hr>
+        <div class="card">
+            <div class="card-body">
+                Resultado:
+                <div id="resultado">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    let btn = document.getElementById("go")
+    btn.addEventListener("click", () => {
+        document.getElementById("resultado").innerHTML = ""
+        const sustituto = /^\@+$/;
+        const comentario = /\/\/.*/
+        const comentarioB = /(\/\*).*(\*\/)/
+        const codigo = document.getElementById("code").value
+        const regexs = [
+            {
+                exp: /(Int)|(Float)|(Char)|(return)|(if)|(else)|(do)|(while)|(for)|(void)|(fun)|(String)|(:)|(println)|(print)/g,
+                nombre: "<Palabra Reservada>"
+            },
+            {
+                exp: /(val)|(var)/,
+                nombre: "<Declarador>"
+            },
+            {
+                exp: /([a-z]|[A-Z]|_)([a-z]|[A-Z]|\d|_)*/,
+                nombre: "<Identificador>"
+            },
+            {
+                exp: /=/,
+                nombre: "<Simbolo asignacion>"
+            },
+            {
+                exp: /[\+\-\*\/*][\+\-\*\/+]*[\+\-\*\/+]*[\+\-\*\/*]*/,
+                nombre: "<Operador>"
+            },
+            {
+                exp: /[\<\>][\<\>]*[\<\>]*[\<\>]*/,
+                nombre: "<Comparador>"
+            },
+            {
+                exp: /{/,
+                nombre: "<Abrir bloque>"
+            },
+            {
+                exp: /}/,
+                nombre: "<Cerrar bloque>"
+            },
+            {
+                exp: /\(/,
+                nombre: "<Abrir Perentesis>"
+            },
+            {
+                exp: /\)/,
+                nombre: "<Cerrar Perentesis>"
+            },
+            {
+                exp: /\[/,
+                nombre: "<Abrir corchete>"
+            },
+            {
+                exp: /\]/,
+                nombre: "<Cerrar corchete>"
+            },
+            {
+                exp: /(")((?:\\\1|(?:(?!\1).))*)(\1)/,
+                nombre: "<Cadena de Texto>"
+            },
+            {
+                exp: /(')((?:\\\1|(?:(?!\1).))*)(\1)/,
+                nombre: "<Caracter>"
+            },
+            {
+                exp: /\d+(\.\d+)?/,
+                nombre: "<Constante numerica>"
+            },
+            {
+                exp: /;/,
+                nombre: "<Fin instruccion>"
+            },
+            {
+                exp: /[\$\|\^\~\°\¬\!\#\%\&\¡\¨\´\`\\][\$\|\^\~\°\¬\!\#\%\&\¡\¨\´\`\\]*[\$\|\^\~\°\¬\!\#\%\&\¡\¨\´\`\\]*/,
+                nombre: "<Simbolo no reconocido>"
+            }
+
+        ]
+
+        const bloques = codigo.split(/\s+/);
+
+        bloques.forEach((bloque) => {
+            var tokens = [];
+
+            if (!bloque.match(comentario) && !bloque.match(comentarioB)) {
+                let container = document.createElement("div")
+                container.style.display = "flex"
+                container.style.alignItems = "baseline"
+                let title = document.createElement("h6")
+                title.appendChild(document.createTextNode("Bloque: "))
+                let value = document.createElement("span")
+                value.appendChild(document.createTextNode(bloque))
+                container.appendChild(title)
+                container.appendChild(value)
+                document.getElementById("resultado").appendChild(container)
+
+                console.log("\nBloque: ", bloque);
+            }
+
+            while (!sustituto.exec(bloque)) {
+                regexs.forEach((regex) => {
+                    const ejecucion = regex.exp.exec(bloque);
+                    if (ejecucion) {
+                        tokens[ejecucion.index] = regex.nombre;
+                        bloque = bloque.replace(ejecucion[0], "@".repeat(ejecucion[0].length));
+                    }
+                });
+            }
+
+            for (indice2 in tokens) {
+                let contain = document.createElement("div")
+                let token = document.createElement("small")
+                token.appendChild(document.createTextNode(tokens[indice2]))
+                contain.appendChild(token)
+                document.getElementById("resultado").appendChild(contain)
+
+
+                console.log(tokens[indice2])
+            }
+
+        })
+    })
+
+</script>
