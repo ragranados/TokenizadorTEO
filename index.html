@@ -20,7 +20,8 @@
             <hr class="my-4">
             <div class="form-group">
                 <label for="exampleInputEmail1">Codigo fuente Kotlin:</label>
-                <input class="form-control" id="code" aria-describedby="emailHelp" placeholder="Código en Kotlin">
+                <textarea class="form-control" rows="10" id="code" aria-describedby="emailHelp"
+                    placeholder="Código en Kotlin"></textarea>
                 <small id="emailHelp" class="form-text text-muted">Ingrese el fragmento de código escrito en
                     Kotlin.</small>
             </div>
@@ -52,7 +53,28 @@
         const codigo = document.getElementById("code").value
         const regexs = [
             {
-                exp: /(Int)|(Float)|(Char)|(return)|(if)|(else)|(do)|(while)|(for)|(void)|(fun)|(String)|(:)|(println)|(print)/g,
+                exp:/(\w+[* ]+){1,2}\w+\(((\w*[* ]+[&]?){1,2}\w+,? *)*\)+\s*\{/,
+                nombre:"<Declaracion de funcion>"
+            },
+            {
+                //TODO: Declaracion de arreglo si se cuentra un tipo de dato antes de este regex
+                exp:/(([a-z]|[A-Z]|_)([a-z]|[A-Z]|\d|_)*\[\d+\])/,
+                nombre:"<Acceso a arreglo por indice>"
+            },
+            {
+                exp:/^[for]+[\s]*[(]+.+;+.+;+.+[)]+[\s]*{{1}$/,
+                nombre:"<Instruccion de iteracion for>"
+            },
+            {
+                exp: /(int)|(float)|(char)/g,
+                nombre: "<Tipo de dato>"
+            },
+            {
+                exp:/(if)|(else)/,
+                nombre:"<Condicional>"
+            },
+            {
+                exp: /(int)|(float)|(char)|(return)|(void)|(if)|(else)/g,
                 nombre: "<Palabra Reservada>"
             },
             {
@@ -60,24 +82,26 @@
                 nombre: ""
             },
             {
-                exp: /(\/\*).*(\*\/)/,
+                //TODO: Validar si encuentra el simbolo /* y que ignore hasta encontrar */
+                exp: /\/(\n*.*?\n*)*?\//,
                 nombre: ""
             },
             {
-                exp: /(val)|(var)/,
-                nombre: "<Declarador>"
-            },
-            {
+                //TODO: Tomar como identificador tambien si se encuentra un tipo de dato seguido de este regex
                 exp: /([a-z]|[A-Z]|_)([a-z]|[A-Z]|\d|_)*/,
                 nombre: "<Identificador>"
+            },
+            {
+                exp: /(\&\&)|(\|\|)|(\!)|(\=\=)/,
+                nombre: "<Operador logico>"
             },
             {
                 exp: /=/,
                 nombre: "<Simbolo asignacion>"
             },
             {
-                exp: /[\+\-\*\/*][\+\-\*\/+]*[\+\-\*\/+]*[\+\-\*\/*]*/,
-                nombre: "<Operador>"
+                exp: /[\+\-\*\/*\%][\+\-\*\/\%+]*[\+\-\*\/\%+]*[\+\-\*\/*\%]*/,
+                nombre: "<Operador aritmeticos>"
             },
             {
                 exp: /[\<\>][\<\>]*[\<\>]*[\<\>]*/,
@@ -130,7 +154,7 @@
 
         ]
 
-        const bloques = codigo.split(/\s+/);
+        const bloques = codigo.split(/\n+/);
         var emergencia = true, i = 0;
 
         bloques.forEach((bloque) => {
@@ -184,4 +208,21 @@
         })
     })
 
+</script>
+<script>
+    document.getElementById('code').addEventListener('keydown', function (e) {
+        if (e.key == 'Tab') {
+            e.preventDefault();
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+
+            // set textarea value to: text before caret + tab + text after caret
+            this.value = this.value.substring(0, start) +
+                "\t" + this.value.substring(end);
+
+            // put caret at right position again
+            this.selectionStart =
+                this.selectionEnd = start + 1;
+        }
+    });
 </script>
