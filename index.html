@@ -43,7 +43,17 @@
 
 </html>
 
-<script src="tokenizer.js" ></script>
+<!--<script src="tokenizer.js" ></script>-->
+<script src="parser.js"></script>
+
+<script>
+    document.getElementById("go").addEventListener("click",()=>{
+        let code = document.getElementById("code").value
+        console.log(parser.parse(code))
+    })
+    
+</script>
+
 <script>
     document.getElementById('code').addEventListener('keydown', function (e) {
         if (e.key == 'Tab') {

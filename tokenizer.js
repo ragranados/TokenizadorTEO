@@ -1,6 +1,7 @@
 let btn = document.getElementById("go")
 var gTokens = []
 btn.addEventListener("click", () => {
+    gTokens=[]
     document.getElementById("resultado").innerHTML = ""
     const sustituto = /^\@+$/;
     const comentario = /\/\/.*/
@@ -88,7 +89,7 @@ const sumParser = () => {
         [T, '<Cerrar Perentesis>', null],
         [T, '<EOF>', null],
         [T2, '<Identificador>',null],
-        [T2, '<Operador aritmeticos>', ['vacia']],
+        [T2, '<Operador aritmeticos>', ['<Operador aritmeticos>',F,T2]],
         [T2, '<Abrir Perentesis>', null],
         [T2, '<Cerrar Perentesis>', ['vacia']],
         [T2, '<EOF>', ['vacia']],
@@ -105,7 +106,9 @@ const sumParser = () => {
     let x = stack[stack.length - 1]
     //Recorrer tokens
     while (true) {
+        console.log("---------------------------------------")
         console.log("token",tok)
+        console.log("x",x)
         console.log("stack",stack)
         if (x === tok && x === '<EOF>') {
             let contain = document.createElement("div")
@@ -138,7 +141,7 @@ const sumParser = () => {
             }
             if(!gTokens.includes(x)){ 
                 celda=buscar_en_tabla(sumProd,x,tok)
-                console.log(celda)
+                console.log("prod",celda)
                 if  (!celda){
                     let contain = document.createElement("div")
                     let token = document.createElement("h6")
