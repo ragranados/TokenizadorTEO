@@ -70,37 +70,26 @@ if (selection === "0") {
 
 
     const sumParser = () => {
-        const S = 0
-        const S2 = 1
-        const T = 2
-        const T2 = 3
-        const F = 4
+        const A = 0
+        const E = 1
+        const E1 = 2
+        const PA = 3
+        const PC = 4
+        const IF = 5
+        const OPA = 6
+        const ID = 7
+        const CP = 8
+        const CPA = 8
         const sumProd =
-            [[S, '<Identificador>', [T, S2]],
-            [S, '<Operador aritmeticos>', null],
-            [S, '<Abrir Perentesis>', [T, S2]],
-            [S, '<Cerrar Perentesis>', null],
-            [S, '<EOF>', null],
-            [S2, '<Identificador>', null],
-            [S2, '<Operador aritmeticos>', ['<Operador aritmeticos>', T, S2]],
-            [S2, '<Abrir Perentesis>', null],
-            [S2, '<Cerrar Perentesis>', ['vacia']],
-            [S2, '<EOF>', ['vacia']],
-            [T, '<Identificador>', [F, T2]],
-            [T, '<Operador aritmeticos>', null],
-            [T, '<Abrir Perentesis>', [F, T2]],
-            [T, '<Cerrar Perentesis>', null],
-            [T, '<EOF>', null],
-            [T2, '<Identificador>', null],
-            [T2, '<Operador aritmeticos>', ['<Operador aritmeticos>', F, T2]],
-            [T2, '<Abrir Perentesis>', null],
-            [T2, '<Cerrar Perentesis>', ['vacia']],
-            [T2, '<EOF>', ['vacia']],
-            [F, '<Identificador>', ['<Identificador>']],
-            [F, '<Operador aritmeticos>', null],
-            [F, '<Abrir Perentesis>', ['<Abrir Perentesis>', S, '<Cerrar Perentesis>']],
-            [F, '<Cerrar Perentesis>', null],
-            [F, '<EOF>', null]
+            [[A, 'IF', [IF, PA, E, PC, "{"]],
+            [E, "ID", [E1, OPA, E1]],
+            [E, "NUM", [E1, OPA, E1]],
+            [PA, "(", ["("]],
+            [PC, ")", [")"]],
+            [IF, "IF", ["IF"]],
+            [OPA, "OPA", ["OPA"]],
+            [E1, "ID", ["ID"]],
+            [E1, "NUM", ["NUM"]],
             ]
 
         let stack = ['<EOF>', 0]
@@ -195,104 +184,34 @@ if (selection === "0") {
     const globarRegexs = () => (
         [
             {
-                exp: /(\w+[* ]+){1,2}\w+\(((\w*[* ]+[&]?){1,2}\w+,? *)*\)+\s*\{/,
-                nombre: "<Declaracion de funcion>"
-            },
-            {
-                //TODO: Declaracion de arreglo si se cuentra un tipo de dato antes de este regex
-                exp: /(([a-z]|[A-Z]|_)([a-z]|[A-Z]|\d|_)*\[\d+\])/,
-                nombre: "<Acceso a arreglo por indice>"
-            },
-            {
-                exp: /^[for]+[\s]*[(]+.+;+.+;+.+[)]+[\s]*{{1}$/,
-                nombre: "<Instruccion de iteracion for>"
-            },
-            {
-                exp: /(int)|(float)|(char)/g,
-                nombre: "<Tipo de dato>"
-            },
-            {
-                exp: /(if)|(else)/,
-                nombre: "<Condicional>"
-            },
-            {
-                exp: /(int)|(float)|(char)|(return)|(void)|(if)|(else)/g,
-                nombre: "<Palabra Reservada>"
-            },
-            {
-                exp: /\/\/.*/,
-                nombre: ""
-            },
-            {
-                //TODO: Validar si encuentra el simbolo /* y que ignore hasta encontrar */
-                exp: /\/(\n*.*?\n*)*?\//,
-                nombre: ""
-            },
-            {
-                //TODO: Tomar como identificador tambien si se encuentra un tipo de dato seguido de este regex
-                exp: /([a-z]|[A-Z]|_)([a-z]|[A-Z]|\d|_)*/,
-                nombre: "<Identificador>"
-            },
-            {
-                exp: /(\&\&)|(\|\|)|(\!)|(\=\=)/,
-                nombre: "<Operador logico>"
-            },
-            {
-                exp: /=/,
-                nombre: "<Simbolo asignacion>"
-            },
-            {
-                exp: /[\+\-\*\/*\%][\+\-\*\/\%+]*[\+\-\*\/\%+]*[\+\-\*\/*\%]*/,
-                nombre: "<Operador aritmeticos>"
-            },
-            {
-                exp: /[\<\>][\<\>]*[\<\>]*[\<\>]*/,
-                nombre: "<Comparador>"
-            },
-            {
-                exp: /{/,
-                nombre: "<Abrir bloque>"
-            },
-            {
-                exp: /}/,
-                nombre: "<Cerrar bloque>"
+                exp: /if/,
+                nombre: "IF"
             },
             {
                 exp: /\(/,
-                nombre: "<Abrir Perentesis>"
+                nombre: "("
             },
             {
                 exp: /\)/,
-                nombre: "<Cerrar Perentesis>"
+                nombre: ")"
             },
             {
-                exp: /\[/,
-                nombre: "<Abrir corchete>"
+                exp: /\{/,
+                nombre: "{"
             },
             {
-                exp: /\]/,
-                nombre: "<Cerrar corchete>"
+                exp: /([a-z]|[A-Z]|_)([a-z]|[A-Z]|\d|_)*/,
+                nombre: "ID"
             },
             {
-                exp: /(")((?:\\\1|(?:(?!\1).))*)(\1)/,
-                nombre: "<Cadena de Texto>"
+                exp: /\d+/,
+                nombre: "NUM"
             },
             {
-                exp: /(')((?:\\\1|(?:(?!\1).))*)(\1)/,
-                nombre: "<Caracter>"
+                exp: /(>)|(<)|(\!=)|(==)|(>=)|(<=)/,
+                nombre: "OPA"
             },
-            {
-                exp: /\d+(\.\d+)?/,
-                nombre: "<Constante numerica>"
-            },
-            {
-                exp: /;/,
-                nombre: "<Fin instruccion>"
-            },
-            {
-                exp: /[\$\|\^\~\°\¬\!\#\%\&\¡\¨\´\`\\\.\,][\$\|\^\~\°\¬\!\#\%\&\¡\¨\´\`\\\.\,]*[\$\|\^\~\°\¬\!\#\%\&\¡\¨\´\`\\\.\,]*/,
-                nombre: "<Simbolo no reconocido>"
-            }
-        ]
-    )
+        ])
+
+
 }
