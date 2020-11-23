@@ -25,6 +25,14 @@
                 <small id="emailHelp" class="form-text text-muted">Ingrese el fragmento de código escrito en
                     Kotlin.</small>
             </div>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <select id="selection" class="form-control">
+                        <option value="0">Tokenizador manual</option>
+                        <option value="1">Tokenizador con JISON</option>
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <button id="go" class="btn btn-primary">Tokenizar</button>
             </div>
@@ -43,15 +51,36 @@
 
 </html>
 
-<!--<script src="tokenizer.js" ></script>-->
+<script src="tokenizer.js" ></script>
 <script src="parser.js"></script>
 
 <script>
-    document.getElementById("go").addEventListener("click",()=>{
-        let code = document.getElementById("code").value
-        console.log(parser.parse(code))
+    document.getElementById("go").addEventListener("click", () => {
+        let selection = document.getElementById("selection").value
+        if (selection === "1") {
+            let code = document.getElementById("code").value
+            let container = document.getElementById("resultado")
+            container.innerHTML = ""
+            try {
+                parser.parse(code)
+                let nDiv = document.createElement("div")
+                let nSpan = document.createElement("h6")
+                nSpan.style.color = 'green'
+                nSpan.appendChild(document.createTextNode("El código no contiente errores sintacticos."))
+                nDiv.appendChild(nSpan)
+                container.appendChild(nDiv)
+            } catch (e) {
+                let nDiv = document.createElement("div")
+                let nSpan = document.createElement("h6")
+                nSpan.style.color = "red"
+                nSpan.appendChild(document.createTextNode(e.message))
+                nDiv.appendChild(nSpan)
+                container.appendChild(nDiv)
+            }
+        }
     })
-    
+
+
 </script>
 
 <script>
