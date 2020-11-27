@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="bootstrap.min.css">
     <title>Tokenizador TEO</title>
 </head>
 
@@ -14,16 +13,16 @@
         <div class="jumbotron">
             <h1 class="display-4">Tokenizador </h1>
             <p class="lead">
-                El siguiente programa es un simple tokenizador del lenguaje Kotlin desarrollado en JavaScript
+                El siguiente programa es un simple parser del lenguaje C desarrollado en JavaScript
             </p>
 
             <hr class="my-4">
             <div class="form-group">
-                <label for="exampleInputEmail1">Codigo fuente Kotlin:</label>
+                <label for="exampleInputEmail1">Codigo fuente C:</label>
                 <textarea class="form-control" rows="10" id="code" aria-describedby="emailHelp"
-                    placeholder="Código en Kotlin"></textarea>
+                    placeholder="Código en C"></textarea>
                 <small id="emailHelp" class="form-text text-muted">Ingrese el fragmento de código escrito en
-                    Kotlin.</small>
+                    C.</small>
             </div>
             <div class="form-group row">
                 <div class="col-md-6">
@@ -61,6 +60,8 @@
             let code = document.getElementById("code").value
             let container = document.getElementById("resultado")
             container.innerHTML = ""
+            console.log(parser.parse(code))
+
             try {
                 parser.parse(code)
                 let nDiv = document.createElement("div")
